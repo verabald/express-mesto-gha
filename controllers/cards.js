@@ -8,10 +8,10 @@ function getCard(req, res) {
 }
 
 function postCard(req, res) {
-    const { name, link } = req.body;
-    Card.create({ name, link, owner: req.user._id })
+  const { name, link } = req.body;
+  Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send({ data: card }))
-    .catch(console.log('Успешно'));
+    .catch(console.log("Успешно"));
 }
 
 function deleteCard(req, res) {
@@ -30,8 +30,30 @@ function deleteCard(req, res) {
     );
 }
 
+function putLike(req, res) {
+  const { idCard } = req.params;
+
+  Card.findByIdAndUpdate(
+    idCard,
+    { $addToSet: { likes: req.user._id } },
+    { new: true }
+  ).then((card) => {});
+}
+
+function deleteLike(req, res) {
+  const { idCard } = req.params;
+
+  Card.findByIdAndUpdate(
+    cardId,
+    { $pull: { likes: req.user._id } }, // убрать _id из массива
+    { new: true }
+  ).then((card) => {});
+}
+
 module.exports = {
   getCard,
   postCard,
   deleteCard,
+  putLike,
+  deleteLike,
 };
