@@ -4,20 +4,18 @@ const { ObjectId } = mongoose.Schema.Types;
 const cardSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true,
-    validate: {
-      validator: ({ length }) => length >= 2 && length <= 30,
-      message: "Название карточки должно быть от 2 до 30 символов",
-    },
+    required: [true, "Обязательное поле"],
+    minlength: [2, "Текст должен быть длиннее 2 символов"],
+    maxlength: [30, "Текст не может быть длиннее 30 символов"],
   },
   link: {
     type: String,
-    required: true,
+    required: [true, "Обязательное поле"],
   },
   owner: {
     type: ObjectId,
     ref: "user",
-    required: true,
+    required: [true, "Обязательное поле"],
   },
   likes: [
     {
