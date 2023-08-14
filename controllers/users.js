@@ -17,22 +17,25 @@ function getUsers(req, res) {
 const getUser = (req, res) => {
   const { userId } = req.params;
   User.findById(userId)
+    .orFail(new Error("NotFoundError"))
     .then((user) => {
-      if (user) return res.send({ data: user });
-
-      return res
-        .status(ERROR_NOT_FOUND)
-        .send({ message: "Пользователь с указанным _id не найден" });
+      res.send({ data: user });
     })
-    .catch((err) =>
-      err.name === "CastError"
-        ? res
-            .status(ERROR_BAD_REQUEST)
-            .send({ message: "Переданы некорректные данные" })
-        : res
-            .status(ERROR_INTERNAL_SERVER)
-            .send({ message: "Ошибка на сервере" })
-    );
+    .catch((err) => {
+      if (err.name === "NotFoundError") {
+        res
+          .status(ERROR_NOT_FOUND)
+          .send({ message: "Пользователь с указанным _id не найден" });
+      } else if (err.name === "CastError") {
+        res
+          .status(ERROR_BAD_REQUEST)
+          .send({ message: "Переданы некорректные данные" });
+      } else {
+        res
+          .status(ERROR_INTERNAL_SERVER)
+          .send({ message: 'Ошибка на сервере"' });
+      }
+    });
 };
 
 function postUser(req, res) {
