@@ -15,6 +15,7 @@ function getCard(req, res) {
 
 function postCard(req, res) {
   const { name, link } = req.body;
+
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send({ data: card }))
     .catch((err) =>
@@ -29,9 +30,9 @@ function postCard(req, res) {
 }
 
 function deleteCard(req, res) {
-  const { idCard } = req.params;
+  const { id } = req.params;
 
-  Card.findByIdAndRemove(idCard)
+  Card.findByIdAndRemove(id)
     .then((card) => {
       if (card) return res.send({ data: card });
 
@@ -51,10 +52,10 @@ function deleteCard(req, res) {
 }
 
 function putLike(req, res) {
-  const { idCard } = req.params;
+  const { cardId } = req.params;
 
   Card.findByIdAndUpdate(
-    idCard,
+    cardId,
     { $addToSet: { likes: req.user._id } },
     { new: true }
   )
@@ -79,10 +80,10 @@ function putLike(req, res) {
 }
 
 function deleteLike(req, res) {
-  const { idCard } = req.params;
+  const { cardId } = req.params;
 
   Card.findByIdAndUpdate(
-    idCard,
+    cardId,
     { $pull: { likes: req.user._id } },
     { new: true }
   )

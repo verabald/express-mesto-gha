@@ -52,10 +52,9 @@ function postUser(req, res) {
 
 function setInfo(req, res) {
   const { name, about } = req.body;
-  const { userId } = req.params;
 
   User.findByIdAndUpdate(
-    userId,
+    req.user._id,
     {
       name,
       about,
@@ -93,10 +92,9 @@ function setInfo(req, res) {
 
 function setAvatar(req, res) {
   const { avatar } = req.body;
-  const { userId } = req.params;
 
   User.findByIdAndUpdate(
-    userId,
+    req.user._id,
     {
       avatar,
     },
