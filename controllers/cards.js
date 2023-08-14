@@ -36,22 +36,25 @@ function deleteCard(req, res) {
   const { cardId } = req.params;
 
   Card.findByIdAndRemove(cardId)
+    .orFail(new Error("NotFoundError"))
     .then((card) => {
-      if (card) return res.send({ data: card });
-
-      return res
-        .status(ERROR_NOT_FOUND)
-        .send({ message: "Карточка с указанным _id не найдена" });
+      res.send({ data: card });
     })
-    .catch((err) =>
-      err.name === "CastError"
-        ? res
-            .status(ERROR_BAD_REQUEST)
-            .send({ message: "Переданы некорректные данные" })
-        : res
-            .status(ERROR_INTERNAL_SERVER)
-            .send({ message: "Ошибка на сервере" })
-    );
+    .catch((err) => {
+      if (err.message === "NotFoundError") {
+        res
+          .status(ERROR_NOT_FOUND)
+          .send({ message: "Карточка с указанным _id не найдена" });
+      } else if (err.name === "CastError") {
+        res
+          .status(ERROR_BAD_REQUEST)
+          .send({ message: "Переданы некорректные данные" });
+      } else {
+        res
+          .status(ERROR_INTERNAL_SERVER)
+          .send({ message: "Ошибка на сервере" });
+      }
+    });
 }
 
 function putLike(req, res) {
