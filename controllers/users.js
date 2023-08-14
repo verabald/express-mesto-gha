@@ -3,7 +3,8 @@ const {
   ERROR_BAD_REQUEST,
   ERROR_NOT_FOUND,
   ERROR_INTERNAL_SERVER,
-} = require("../errors/errors");
+  STATUS_CREATED,
+} = require("../status/status");
 
 function getUsers(req, res) {
   User.find({})
@@ -32,13 +33,15 @@ const getUser = (req, res) => {
             .status(ERROR_INTERNAL_SERVER)
             .send({ message: "Ошибка на сервере" })
     );
-}
+};
 
 function postUser(req, res) {
   const { name, about, avatar } = req.body;
 
   User.create({ name, about, avatar })
-    .then((user) => res.send({ data: user }))
+    .then((user) => {
+      res.status(STATUS_CREATED).send({ data: user });
+    })
     .catch((err) =>
       err.name === "ValidationError"
         ? res
@@ -80,7 +83,7 @@ function setInfo(req, res) {
 
       if (err.name === "CastError") {
         return res
-          .status(ERROR_NOT_FOUND)
+          .status(ERROR_BAD_REQUEST)
           .send({ message: "Пользователь с указанным _id не найден" });
       }
 
@@ -119,7 +122,7 @@ function setAvatar(req, res) {
 
       if (err.name === "CastError") {
         return res
-          .status(ERROR_NOT_FOUND)
+          .status(ERROR_BAD_REQUEST)
           .send({ message: "Пользователь с указанным _id не найден" });
       }
 

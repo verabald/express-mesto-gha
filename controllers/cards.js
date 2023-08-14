@@ -3,7 +3,8 @@ const {
   ERROR_BAD_REQUEST,
   ERROR_NOT_FOUND,
   ERROR_INTERNAL_SERVER,
-} = require("../errors/errors");
+  STATUS_CREATED,
+} = require("../status/status");
 
 function getCard(req, res) {
   Card.find({})
@@ -17,7 +18,9 @@ function postCard(req, res) {
   const { name, link } = req.body;
 
   Card.create({ name, link, owner: req.user._id })
-    .then((card) => res.send({ data: card }))
+    .then((card) => {
+      res.status(STATUS_CREATED).send({ data: card });
+    })
     .catch((err) =>
       err.name === "ValidationError"
         ? res

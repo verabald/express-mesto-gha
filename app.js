@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 const routerUsers = require("./routes/users");
 const routerCards = require("./routes/cards");
 
-const { ERROR_NOT_FOUND } = require("./errors/errors");
+const { ERROR_NOT_FOUND } = require("./status/status");
 
 const { PORT = 3000, URL = "mongodb://127.0.0.1/mestodb" } = process.env;
 
