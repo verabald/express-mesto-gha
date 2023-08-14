@@ -33,7 +33,7 @@ const getUser = (req, res) => {
       } else {
         res
           .status(ERROR_INTERNAL_SERVER)
-          .send({ message: 'Ошибка на сервере"' });
+          .send({ message: "Ошибка на сервере" });
       }
     });
 };
