@@ -1,4 +1,5 @@
 const express = require("express");
+const helmet = require("helmet");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 
@@ -7,13 +8,15 @@ const routerCards = require("./routes/cards");
 
 const { ERROR_NOT_FOUND } = require("./errors/errors");
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, URL = "mongodb://127.0.0.1/mestodb" } = process.env;
 
 const app = express();
 
-mongoose.connect("mongodb://127.0.0.1/mestodb");
+mongoose.connect(URL);
 
 app.use(express.json());
+
+app.use(helmet());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
