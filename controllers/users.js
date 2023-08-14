@@ -13,10 +13,9 @@ function getUsers(req, res) {
     );
 }
 
-function getUser(req, res) {
-  const { id } = req.params;
-  console.log(id);
-  User.findById(req.params.id)
+const getUser = (req, res) => {
+  const { userId } = req.params;
+  User.findById(userId)
     .then((user) => {
       if (user) return res.send({ data: user });
 
@@ -53,10 +52,10 @@ function postUser(req, res) {
 
 function setInfo(req, res) {
   const { name, about } = req.body;
-  const { id } = req.params;
+  const { userId } = req.params;
 
   User.findByIdAndUpdate(
-    id,
+    userId,
     {
       name,
       about,
@@ -94,10 +93,10 @@ function setInfo(req, res) {
 
 function setAvatar(req, res) {
   const { avatar } = req.body;
-  const { id } = req.params;
+  const { userId } = req.params;
 
   User.findByIdAndUpdate(
-    id,
+    userId,
     {
       avatar,
     },
