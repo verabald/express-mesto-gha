@@ -22,7 +22,7 @@ const getUser = (req, res) => {
       res.send({ data: user });
     })
     .catch((err) => {
-      if (err.name === "NotFoundError") {
+      if (err.message === "NotFoundError") {
         res
           .status(ERROR_NOT_FOUND)
           .send({ message: "Пользователь с указанным _id не найден" });
