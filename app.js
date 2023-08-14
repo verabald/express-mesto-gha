@@ -5,6 +5,8 @@ const bodyParser = require("body-parser");
 const routerUsers = require("./routes/users");
 const routerCards = require("./routes/cards");
 
+const { ERROR_NOT_FOUND } = require("../errors/errors");
+
 const { PORT = 3000 } = process.env;
 
 const app = express();
@@ -26,5 +28,9 @@ app.use((req, res, next) => {
 
 app.use("/users", routerUsers);
 app.use("/cards", routerCards);
+
+app.use((req, res) => {
+  res.status(ERROR_NOT_FOUND).send({ message: "Такой страницы не существует" });
+});
 
 app.listen(PORT);
