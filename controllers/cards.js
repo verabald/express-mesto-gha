@@ -30,15 +30,15 @@ function postCard(req, res) {
 }
 
 function deleteCard(req, res) {
-  const { id } = req.params;
+  const { cardId } = req.params;
 
-  Card.findByIdAndRemove(id)
+  Card.findByIdAndRemove(cardId)
     .then((card) => {
       if (card) return res.send({ data: card });
 
       return res
         .status(ERROR_NOT_FOUND)
-        .send({ message: "Карточка с указанным _id не найдена." });
+        .send({ message: "Карточка с указанным _id не найдена" });
     })
     .catch((err) =>
       err.name === "CastError"
