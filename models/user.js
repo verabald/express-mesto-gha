@@ -5,19 +5,20 @@ const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Обязательное поле"],
+      default: "Жак-Ив Кусто",
       minlength: [2, "Текст должен быть длиннее 2 символов"],
       maxlength: [30, "Текст не может быть длиннее 30 символов"],
     },
     about: {
       type: String,
-      required: [true, "Обязательное поле"],
+      default: "Исследователь",
       minlength: [2, "Текст должен быть длиннее 2 символов"],
       maxlength: [30, "Текст не может быть длиннее 30 символов"],
     },
     avatar: {
       type: String,
-      required: [true, "Обязательное поле"],
+      default:
+        "https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png",
       validate: {
         validator: (v) => validator.isURL(v),
         message: "Некорректный URL",
