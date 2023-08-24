@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
+const { NODE_ENV, JWT_SECRET } = process.env;
 
 const {
   ERROR_BAD_REQUEST,
@@ -39,6 +40,21 @@ const getUser = (req, res) => {
       }
     });
 };
+
+function login(req, res, next) {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign(
+        { _id: user._id },
+        NODE_ENV === "production" ? JWT_SECRET : "dev-secret",
+        { expiresIn: "7d" }
+      );
+      res.status(STATUS_CREATED).send({ token });
+    })
+    .catch(next);
+}
 
 function postUser(req, res) {
   const { name, about, avatar, email, password } = req.body;

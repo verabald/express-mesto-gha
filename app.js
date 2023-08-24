@@ -12,6 +12,8 @@ const { PORT = 3000, URL = "mongodb://127.0.0.1/mestodb" } = process.env;
 
 const app = express();
 
+require('dotenv').config();
+
 mongoose.connect(URL);
 
 app.use(express.json());
