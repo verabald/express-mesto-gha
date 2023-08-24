@@ -161,4 +161,5 @@ module.exports = {
   postUser,
   setInfo,
   setAvatar,
+  login,
 };

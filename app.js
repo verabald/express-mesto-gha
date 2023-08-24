@@ -6,13 +6,15 @@ const bodyParser = require("body-parser");
 const routerUsers = require("./routes/users");
 const routerCards = require("./routes/cards");
 
+const { postUser, login } = require("./controllers/users");
+
 const { ERROR_NOT_FOUND } = require("./status/status");
 
 const { PORT = 3000, URL = "mongodb://127.0.0.1/mestodb" } = process.env;
 
 const app = express();
 
-require('dotenv').config();
+require("dotenv").config();
 
 mongoose.connect(URL);
 
@@ -33,6 +35,8 @@ app.use((req, res, next) => {
 
 app.use("/users", routerUsers);
 app.use("/cards", routerCards);
+app.post("/signin", login);
+app.post("/signup", postUser);
 
 app.use((req, res) => {
   res.status(ERROR_NOT_FOUND).send({ message: "Такой страницы не существует" });
