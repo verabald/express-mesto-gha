@@ -1,20 +1,16 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const { NODE_ENV, JWT_SECRET } = process.env;
+const NotFoundError = require("../status/NotFoundError");
+const ForbiddenError = require("../status/ForbiddenError");
+const BadRequestError = require("../status/BadRequestError");
 
-const {
-  ERROR_BAD_REQUEST,
-  ERROR_NOT_FOUND,
-  ERROR_INTERNAL_SERVER,
-  STATUS_CREATED,
-} = require("../status/status");
+const { STATUS_CREATED } = require("../status/status");
 
 function getUsers(req, res) {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch(() =>
-      res.status(ERROR_INTERNAL_SERVER).send({ message: "Ошибка на сервере" })
-    );
+    .catch(next);
 }
 
 const getUser = (req, res) => {
@@ -26,17 +22,11 @@ const getUser = (req, res) => {
     })
     .catch((err) => {
       if (err.message === "NotFoundError") {
-        res
-          .status(ERROR_NOT_FOUND)
-          .send({ message: "Пользователь с указанным _id не найден" });
+        next(new NotFoundError("Пользователь с указанным _id не найдена"));
       } else if (err.name === "CastError") {
-        res
-          .status(ERROR_BAD_REQUEST)
-          .send({ message: "Переданы некорректные данные" });
+        next(new BadRequestError("Переданы некорректные данные"));
       } else {
-        res
-          .status(ERROR_INTERNAL_SERVER)
-          .send({ message: "Ошибка на сервере" });
+        next(err);
       }
     });
 };
@@ -65,15 +55,13 @@ function postUser(req, res) {
     .then((user) => {
       res.status(STATUS_CREATED).send({ name, about, avatar, email });
     })
-    .catch((err) =>
-      err.name === "ValidationError"
-        ? res
-            .status(ERROR_BAD_REQUEST)
-            .send({ message: "Переданы некорректные данные" })
-        : res
-            .status(ERROR_INTERNAL_SERVER)
-            .send({ message: "Ошибка на сервере" })
-    );
+    .catch((err) => {
+      if (err.name === "ValidationError" || err.name === "CastError") {
+        next(new BadRequestError("Переданы некорректные данные"));
+      }
+
+      next(err);
+    });
 }
 
 function setInfo(req, res) {
@@ -98,21 +86,13 @@ function setInfo(req, res) {
         .send({ message: "Пользователь с указанным _id не найден" });
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        return res
-          .status(ERROR_BAD_REQUEST)
-          .send({ message: "Переданы некорректные данные" });
+      if (err.message === "NotFoundError") {
+        next(new NotFoundError("Пользователь с указанным _id не найдена"));
+      } else if (err.name === "CastError") {
+        next(new BadRequestError("Переданы некорректные данные"));
+      } else {
+        next(err);
       }
-
-      if (err.name === "CastError") {
-        return res
-          .status(ERROR_BAD_REQUEST)
-          .send({ message: "Пользователь с указанным _id не найден" });
-      }
-
-      return res
-        .status(ERROR_INTERNAL_SERVER)
-        .send({ message: "Ошибка на сервере" });
     });
 }
 
@@ -137,21 +117,13 @@ function setAvatar(req, res) {
         .send({ message: "Пользователь с указанным _id не найден" });
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        return res
-          .status(ERROR_BAD_REQUEST)
-          .send({ message: "Переданы некорректные данные" });
+      if (err.message === "NotFoundError") {
+        next(new NotFoundError("Пользователь с указанным _id не найдена"));
+      } else if (err.name === "CastError") {
+        next(new BadRequestError("Переданы некорректные данные"));
+      } else {
+        next(err);
       }
-
-      if (err.name === "CastError") {
-        return res
-          .status(ERROR_BAD_REQUEST)
-          .send({ message: "Пользователь с указанным _id не найден" });
-      }
-
-      return res
-        .status(ERROR_INTERNAL_SERVER)
-        .send({ message: "Ошибка на сервере" });
     });
 }
 

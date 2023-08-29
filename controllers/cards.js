@@ -1,9 +1,8 @@
 const Card = require("../models/card");
-const NotFoundError = require("../errors/NotFoundError");
-const ForbiddenError = require("../errors/ForbiddenError");
-const BadRequestError = require("../errors/BadRequestError");
-const errorServer = require("../middlewares/errors");
-const { STATUS_CREATED, ERROR_INTERNAL_SERVER } = require("../status/status");
+const NotFoundError = require("../status/NotFoundError");
+const ForbiddenError = require("../status/ForbiddenError");
+const BadRequestError = require("../status/BadRequestError");
+const { STATUS_CREATED } = require("../status/status");
 
 function getCard(req, res, next) {
   Card.find({})
