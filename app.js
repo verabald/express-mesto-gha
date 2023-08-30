@@ -27,8 +27,30 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/users", routerUsers);
 app.use("/cards", routerCards);
-app.post("/signin", login);
-app.post("/signup", postUser);
+
+app.post(
+  "/signin",
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required().min(8),
+    }),
+  }),
+  login
+);
+app.post(
+  "/signup",
+  celebrate({
+    body: Joi.object().keys({
+      email: Joi.string().required().email(),
+      password: Joi.string().required().min(8),
+      name: Joi.string().min(2).max(30),
+      about: Joi.string().min(2).max(30),
+      avatar: Joi.string().regex(regExp),
+    }),
+  }),
+  postUser
+);
 
 app.use((req, res) => {
   res.status(ERROR_NOT_FOUND).send({ message: "Такой страницы не существует" });
