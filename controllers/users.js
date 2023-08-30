@@ -2,7 +2,7 @@ const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const { NODE_ENV, JWT_SECRET } = process.env;
 const NotFoundError = require("../status/NotFoundError");
-const ForbiddenError = require("../status/ForbiddenError");
+const ConflictError = require("../status/ConflictError");
 const BadRequestError = require("../status/BadRequestError");
 
 const { STATUS_CREATED } = require("../status/status");
@@ -53,14 +53,22 @@ function postUser(req, res, next) {
     .hash(password, 10)
     .then((hash) => User.create({ name, about, avatar, email, password: hash }))
     .then((user) => {
-      res.status(STATUS_CREATED).send({ name, about, avatar, email });
+      res.status(STATUS_CREATED).send({
+        _id: user._id,
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+      });
     })
     .catch((err) => {
-      if (err.name === "ValidationError" || err.name === "CastError") {
-        next(new BadRequestError("Переданы некорректные данные"));
+      if (err.code === 11000) {
+        return next(new ConflictError("Пользователь существует"));
       }
-
-      next(err);
+      if (err.name === "ValidationError") {
+        return next(new BadRequestError("Введены некорректные данные"));
+      }
+      return next(err);
     });
 }
 
