@@ -45,7 +45,7 @@ function deleteCard(req, res, next) {
     });
 }
 
-function putLike(req, res) {
+function putLike(req, res, next) {
   const { cardId } = req.params;
 
   Card.findByIdAndUpdate(
@@ -67,7 +67,7 @@ function putLike(req, res) {
     });
 }
 
-function deleteLike(req, res) {
+function deleteLike(req, res, next) {
   const { cardId } = req.params;
 
   Card.findByIdAndUpdate(

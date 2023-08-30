@@ -7,13 +7,13 @@ const BadRequestError = require("../status/BadRequestError");
 
 const { STATUS_CREATED } = require("../status/status");
 
-function getUsers(req, res) {
+function getUsers(req, res, next) {
   User.find({})
     .then((users) => res.send({ data: users }))
     .catch(next);
 }
 
-const getUser = (req, res) => {
+const getUser = (req, res, next) => {
   const { userId } = req.params;
   User.findById(userId)
     .orFail(new Error("NotFoundError"))
@@ -46,7 +46,7 @@ function login(req, res, next) {
     .catch(next);
 }
 
-function postUser(req, res) {
+function postUser(req, res, next) {
   const { name, about, avatar, email, password } = req.body;
 
   bcrypt
@@ -64,7 +64,7 @@ function postUser(req, res) {
     });
 }
 
-function setInfo(req, res) {
+function setInfo(req, res, next) {
   const { name, about } = req.body;
 
   User.findByIdAndUpdate(
@@ -96,7 +96,7 @@ function setInfo(req, res) {
     });
 }
 
-function setAvatar(req, res) {
+function setAvatar(req, res, next) {
   const { avatar } = req.body;
 
   User.findByIdAndUpdate(

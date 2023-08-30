@@ -8,6 +8,8 @@ const { regExp } = require("./constants/constants");
 const routerUsers = require("./routes/users");
 const routerCards = require("./routes/cards");
 
+const auth = require("./middlewares/auth");
+
 const { postUser, login } = require("./controllers/users");
 
 const { ERROR_NOT_FOUND } = require("./status/status");
@@ -26,9 +28,6 @@ app.use(helmet());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-app.use("/users", routerUsers);
-app.use("/cards", routerCards);
 
 app.post(
   "/signin",
@@ -53,6 +52,11 @@ app.post(
   }),
   postUser
 );
+
+app.use(auth);
+
+app.use("/users", routerUsers);
+app.use("/cards", routerCards);
 
 app.use((req, res) => {
   res.status(ERROR_NOT_FOUND).send({ message: "Такой страницы не существует" });
