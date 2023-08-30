@@ -2,7 +2,7 @@ const express = require("express");
 const helmet = require("helmet");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const { celebrate, Joi } = require("celebrate");
+const { errors, celebrate, Joi } = require("celebrate");
 const { regExp } = require("./constants/constants");
 
 const routerUsers = require("./routes/users");
@@ -59,6 +59,7 @@ app.use(auth);
 app.use("/users", routerUsers);
 app.use("/cards", routerCards);
 
+app.use(errors());
 app.use(errorServer);
 
 app.use((req, res) => {
