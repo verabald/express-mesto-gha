@@ -3,7 +3,7 @@ const helmet = require("helmet");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const { celebrate, Joi } = require("celebrate");
-const { regExp } = require("../constants/constants");
+const { regExp } = require("./constants/constants");
 
 const routerUsers = require("./routes/users");
 const routerCards = require("./routes/cards");
