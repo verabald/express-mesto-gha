@@ -59,11 +59,11 @@ app.use(auth);
 app.use("/users", routerUsers);
 app.use("/cards", routerCards);
 
-app.use(errors());
-app.use(errorServer);
-
 app.use((req, res) => {
   res.status(ERROR_NOT_FOUND).send({ message: "Такой страницы не существует" });
 });
+
+app.use(errors());
+app.use(errorServer);
 
 app.listen(PORT);
