@@ -9,7 +9,7 @@ const routerUsers = require("./routes/users");
 const routerCards = require("./routes/cards");
 
 const auth = require("./middlewares/auth");
-const errorServe = require("./middlewares/errors");
+const errorServer = require("./middlewares/errors");
 
 const { postUser, login } = require("./controllers/users");
 
