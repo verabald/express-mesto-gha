@@ -1,9 +1,11 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+
+const UnauthorizedError = require("../status/UnauthorizedError");
 const NotFoundError = require("../status/NotFoundError");
 const ConflictError = require("../status/ConflictError");
 const BadRequestError = require("../status/BadRequestError");
-const jwt = require("jsonwebtoken");
 
 const { STATUS_CREATED } = require("../status/status");
 
@@ -16,14 +18,12 @@ function getUsers(req, res, next) {
 const getUser = (req, res, next) => {
   const { userId } = req.params;
   User.findById(userId)
-    .orFail(new Error("NotFoundError"))
+    .orFail(new NotFoundError("Пользователь с указанным _id не найден"))
     .then((user) => {
       res.send({ data: user });
     })
     .catch((err) => {
-      if (err.message === "NotFoundError") {
-        next(new NotFoundError("Пользователь с указанным _id не найдена"));
-      } else if (err.name === "CastError") {
+      if (err.name === "CastError") {
         next(new BadRequestError("Переданы некорректные данные"));
       } else {
         next(err);
@@ -43,6 +43,8 @@ function login(req, res, next) {
         { expiresIn: "7d" }
       );
       res.status(STATUS_CREATED).send({ token });
+
+      throw new UnauthorizedError("Неверно указаны почта или пароль");
     })
     .catch(next);
 }
@@ -96,7 +98,7 @@ function setInfo(req, res, next) {
     })
     .catch((err) => {
       if (err.message === "NotFoundError") {
-        next(new NotFoundError("Пользователь с указанным _id не найдена"));
+        next(new NotFoundError("Пользователь с указанным _id не найден"));
       } else if (err.name === "CastError") {
         next(new BadRequestError("Переданы некорректные данные"));
       } else {
@@ -119,16 +121,12 @@ function setAvatar(req, res, next) {
     }
   )
     .then((user) => {
-      if (user) return res.send({ data: user });
+      if (user) return res.send(user);
 
-      return res
-        .status(ERROR_NOT_FOUND)
-        .send({ message: "Пользователь с указанным _id не найден" });
+      throw new NotFoundError("Пользователь с указанным _id не найден");
     })
     .catch((err) => {
-      if (err.message === "NotFoundError") {
-        next(new NotFoundError("Пользователь с указанным _id не найдена"));
-      } else if (err.name === "CastError") {
+      if (err.name === "ValidationError" || err.name === "CastError") {
         next(new BadRequestError("Переданы некорректные данные"));
       } else {
         next(err);
