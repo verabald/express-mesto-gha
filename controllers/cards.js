@@ -2,7 +2,7 @@ const Card = require("../models/card");
 const NotFoundError = require("../status/NotFoundError");
 const ForbiddenError = require("../status/ForbiddenError");
 const BadRequestError = require("../status/BadRequestError");
-const { STATUS_CREATED } = require("../status/status");
+const { STATUS_OK } = require("../status/status");
 
 function getCard(req, res, next) {
   Card.find({})
@@ -15,7 +15,7 @@ function postCard(req, res, next) {
 
   Card.create({ name, link, owner: req.user._id })
     .then((card) => {
-      res.status(STATUS_CREATED).send({ data: card });
+      res.status(STATUS_OK).send({ data: card });
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
