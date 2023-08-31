@@ -7,6 +7,7 @@ const { regExp } = require("./constants/constants");
 
 const routerUsers = require("./routes/users");
 const routerCards = require("./routes/cards");
+const pageNotFound = require("./routes/pageNotFound");
 
 const auth = require("./middlewares/auth");
 const errorServer = require("./middlewares/errors");
@@ -56,10 +57,7 @@ app.use(auth);
 
 app.use("/users", routerUsers);
 app.use("/cards", routerCards);
-
-app.use((req, res) => {
-  res.status(ERROR_NOT_FOUND).send({ message: "Такой страницы не существует" });
-});
+app.use("/", require("./routes/pageNotFound"));
 
 app.use(errors());
 app.use(errorServer);
