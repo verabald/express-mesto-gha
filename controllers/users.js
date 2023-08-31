@@ -1,6 +1,5 @@
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
-const { NODE_ENV, JWT_SECRET } = process.env;
 const NotFoundError = require("../status/NotFoundError");
 const ConflictError = require("../status/ConflictError");
 const BadRequestError = require("../status/BadRequestError");
@@ -34,6 +33,7 @@ const getUser = (req, res, next) => {
 
 function login(req, res, next) {
   const { email, password } = req.body;
+  const { NODE_ENV, JWT_SECRET } = process.env;
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
