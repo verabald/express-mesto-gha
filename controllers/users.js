@@ -2,7 +2,7 @@ const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const { NODE_ENV, JWT_SECRET } = require("../utils/config");
+const { JWT_SECRET } = require("../utils/config");
 
 const UnauthorizedError = require("../status/UnauthorizedError");
 const NotFoundError = require("../status/NotFoundError");
@@ -44,8 +44,6 @@ function login(req, res, next) {
         { expiresIn: "7d" }
       );
       res.status(STATUS_OK).send({ token });
-
-      throw new UnauthorizedError("Неверно указаны почта или пароль");
     })
     .catch(next);
 }

@@ -13,8 +13,6 @@ const errorServer = require("./middlewares/errors");
 
 const { postUser, login } = require("./controllers/users");
 
-const { ERROR_NOT_FOUND } = require("./status/status");
-
 const { PORT = 3000, URL = "mongodb://127.0.0.1/mestodb" } = process.env;
 
 const app = express();
