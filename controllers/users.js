@@ -7,7 +7,7 @@ const NotFoundError = require("../status/NotFoundError");
 const ConflictError = require("../status/ConflictError");
 const BadRequestError = require("../status/BadRequestError");
 
-const { STATUS_CREATED } = require("../status/status");
+const { STATUS_OK } = require("../status/status");
 
 function getUsers(req, res, next) {
   User.find({})
@@ -42,7 +42,7 @@ function login(req, res, next) {
         NODE_ENV === "production" ? JWT_SECRET : "dev-secret",
         { expiresIn: "7d" }
       );
-      res.status(STATUS_CREATED).send({ token });
+      res.status(STATUS_OK).send({ token });
 
       throw new UnauthorizedError("Неверно указаны почта или пароль");
     })
@@ -56,7 +56,7 @@ function postUser(req, res, next) {
     .hash(password, 10)
     .then((hash) => User.create({ name, about, avatar, email, password: hash }))
     .then((user) => {
-      res.status(STATUS_CREATED).send({
+      res.status(STATUS_OK).send({
         _id: user._id,
         name: user.name,
         about: user.about,

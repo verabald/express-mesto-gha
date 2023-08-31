@@ -1,7 +1,7 @@
-const STATUS_CREATED = 201;
+const STATUS_OK = 200;
 const ERROR_INTERNAL_SERVER = 500;
 
 module.exports = {
-  STATUS_CREATED,
+  STATUS_OK,
   ERROR_INTERNAL_SERVER
 };
