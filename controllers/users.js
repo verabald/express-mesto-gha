@@ -147,6 +147,7 @@ function setAvatar(req, res, next) {
 module.exports = {
   getUsers,
   getUser,
+  getCurrentUser,
   postUser,
   setInfo,
   setAvatar,

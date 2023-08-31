@@ -3,6 +3,7 @@ const { celebrate, Joi } = require("celebrate");
 const {
   getUsers,
   getUser,
+  getCurrentUser,
   setInfo,
   setAvatar,
 } = require("../controllers/users");
