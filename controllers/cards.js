@@ -30,19 +30,28 @@ function deleteCard(req, res, next) {
   const { cardId } = req.params;
 
   Card.findByIdAndRemove(cardId)
-    .orFail(new NotFoundError("Карточка с указанным _id: ${req.params.cardId} не найдена"))
+    .orFail(
+      new NotFoundError(
+        "Карточка с указанным _id: ${req.params.cardId} не найдена"
+      )
+    )
     .then((card) => {
-      res.send({ data: card });
-    })
-    .catch((err) => {
-      if (err.message === "NotFoundError") {
-        next(new NotFoundError("Карточка с указанным _id не найдена"));
-      } else if (err.name === "CastError") {
-        next(new BadRequestError("Переданы некорректные данные"));
+      if (String(card.owner._id) !== req.user._id) {
+        throw new ForbiddenError("Вы не можете удалить чужую карточку");
       } else {
-        next(err);
+        Card.findByIdAndRemove(String(req.params.cardId))
+          .then((result) => {
+            res.send({ data: result });
+          })
+          .catch((err) => {
+            if (err.name === "CastError") {
+              return next(new BadRequestError("Введены некорректные данные"));
+            }
+            return next(err);
+          });
       }
-    });
+    })
+    .catch(next);
 }
 
 function putLike(req, res, next) {
