@@ -9,6 +9,7 @@ const {
 const { regExp } = require("../constants/constants");
 
 router.get("/", getUsers);
+router.get('/me', getCurrentUser);
 
 router.get(
   "/:userId",

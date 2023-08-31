@@ -17,7 +17,7 @@ function getUsers(req, res, next) {
     .catch(next);
 }
 
-const getUser = (req, res, next) => {
+function getUser(req, res, next) {
   const { userId } = req.params;
   User.findById(userId)
     .orFail(new NotFoundError("Пользователь с указанным _id не найден"))
@@ -31,18 +31,29 @@ const getUser = (req, res, next) => {
         next(err);
       }
     });
-};
+}
+
+function getCurrentUser(req, res, next) {
+  User.findById(req.user._id)
+    .orFail(
+      new NotFoundError(
+        "Пользователь с указанным _id: ${req.user._id} не найден"
+      )
+    )
+    .then((user) => {
+      res.send({ data: user });
+    })
+    .catch(next);
+}
 
 function login(req, res, next) {
   const { email, password } = req.body;
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign(
-        { _id: user._id },
-        JWT_SECRET,
-        { expiresIn: "7d" }
-      );
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
+        expiresIn: "7d",
+      });
       res.status(STATUS_OK).send({ token });
     })
     .catch(next);
