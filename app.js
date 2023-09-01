@@ -1,24 +1,24 @@
-const express = require("express");
-const helmet = require("helmet");
-const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
-const { errors, celebrate, Joi } = require("celebrate");
-const { regExp } = require("./constants/constants");
+const express = require('express');
+const helmet = require('helmet');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const { errors, celebrate, Joi } = require('celebrate');
+const { regExp } = require('./constants/constants');
 
-const routerUsers = require("./routes/users");
-const routerCards = require("./routes/cards");
-const pageNotFound = require("./routes/pageNotFound");
+const routerUsers = require('./routes/users');
+const routerCards = require('./routes/cards');
+const pageNotFound = require('./routes/pageNotFound');
 
-const auth = require("./middlewares/auth");
-const errorServer = require("./middlewares/errors");
+const auth = require('./middlewares/auth');
+const errorServer = require('./middlewares/errors');
 
-const { postUser, login } = require("./controllers/users");
+const { postUser, login } = require('./controllers/users');
 
-const { PORT = 3000, URL = "mongodb://127.0.0.1/mestodb" } = process.env;
+const { PORT = 3000, URL = 'mongodb://127.0.0.1/mestodb' } = process.env;
 
 const app = express();
 
-require("dotenv").config();
+require('dotenv').config();
 
 mongoose.connect(URL);
 
@@ -30,17 +30,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post(
-  "/signin",
+  '/signin',
   celebrate({
     body: Joi.object().keys({
       email: Joi.string().required().email(),
       password: Joi.string().required().min(8),
     }),
   }),
-  login
+  login,
 );
 app.post(
-  "/signup",
+  '/signup',
   celebrate({
     body: Joi.object().keys({
       email: Joi.string().required().email(),
@@ -50,14 +50,14 @@ app.post(
       avatar: Joi.string().regex(regExp),
     }),
   }),
-  postUser
+  postUser,
 );
 
 app.use(auth);
 
-app.use("/users", routerUsers);
-app.use("/cards", routerCards);
-app.use("/", require("./routes/pageNotFound"));
+app.use('/users', routerUsers);
+app.use('/cards', routerCards);
+app.use('/', pageNotFound);
 
 app.use(errors());
 app.use(errorServer);
