@@ -2,6 +2,7 @@ const express = require('express');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const { rateLimit } = require('express-rate-limit');
 const { errors, celebrate, Joi } = require('celebrate');
 const { regExp } = require('./constants/constants');
 
@@ -25,6 +26,15 @@ mongoose.connect(URL);
 app.use(express.json());
 
 app.use(helmet());
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: 'draft-7',
+  legacyHeaders: false,
+});
+
+app.use(limiter);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
