@@ -2,9 +2,12 @@ const express = require('express');
 const helmet = require('helmet');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+
 const { rateLimit } = require('express-rate-limit');
 const { errors, celebrate, Joi } = require('celebrate');
 const { regExp } = require('./constants/constants');
+
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const routerUsers = require('./routes/users');
 const routerCards = require('./routes/cards');
@@ -39,6 +42,8 @@ app.use(limiter);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(requestLogger);
+
 app.post(
   '/signin',
   celebrate({
@@ -68,6 +73,8 @@ app.use(auth);
 app.use('/users', routerUsers);
 app.use('/cards', routerCards);
 app.use('/', pageNotFound);
+
+app.use(errorLogger);
 
 app.use(errors());
 app.use(errorServer);
